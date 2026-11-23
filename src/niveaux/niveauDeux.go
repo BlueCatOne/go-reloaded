@@ -5,6 +5,7 @@ import (
 	"os"
 	"slices"
 	"strconv"
+	"strings"
 )
 
 func capitalize(s string) string {
@@ -82,34 +83,31 @@ func NiveauDeux(ligne []string) []string {
 			nouvelle_ligne = appliquer_modifieur(nouvelle_ligne, toLower, 1)
 		} else if ligne[i] == "(cap)" {
 			nouvelle_ligne = appliquer_modifieur(nouvelle_ligne, capitalize, 1)
-			
-		//cas avec nombres
-		} else if len(ligne[i]) >= 6 && ligne[i][:5] == "(up, " && ligne[i][len(ligne[i])-1:] == ")" { // up
-
-			nb_mod, err := strconv.Atoi(ligne[i][5 : len(ligne[i])-1])
+			//cas avec nombres
+		} else if ligne[i] == "(up," && ligne[i+1][len(ligne[i+1])-1:] == ")" { // up
+			nb_mod, err := strconv.Atoi(ligne[i+1][:len(ligne[i+1])-1])
 			if err != nil {
 				fmt.Println("Erreur de conversion:", err)
 				os.Exit(1)
 			}
 			nouvelle_ligne = appliquer_modifieur(nouvelle_ligne, toUpper, nb_mod)
-
-		} else if len(ligne[i]) >= 7 && ligne[i][:6] == "(low, " && ligne[i][len(ligne[i])-1:] == ")" { // low
-
-			nb_mod, err := strconv.Atoi(ligne[i][6 : len(ligne[i])-1])
+			i++
+		} else if ligne[i] == "(low," && ligne[i+1][len(ligne[i+1])-1:] == ")" { // low
+			nb_mod, err := strconv.Atoi(ligne[i+1][:len(ligne[i+1])-1])
 			if err != nil {
 				fmt.Println("Erreur de conversion:", err)
 				os.Exit(1)
 			}
 			nouvelle_ligne = appliquer_modifieur(nouvelle_ligne, toLower, nb_mod)
-
-		} else if len(ligne[i]) >= 7 && ligne[i][:6] == "(cap, " && ligne[i][len(ligne[i])-1:] == ")" { // cap
-
-			nb_mod, err := strconv.Atoi(ligne[i][6 : len(ligne[i])-1])
+			i++
+		} else if ligne[i] == "(cap," && ligne[i+1][len(ligne[i+1])-1:] == ")" { // low
+			nb_mod, err := strconv.Atoi(ligne[i+1][:len(ligne[i+1])-1])
 			if err != nil {
 				fmt.Println("Erreur de conversion:", err)
 				os.Exit(1)
 			}
 			nouvelle_ligne = appliquer_modifieur(nouvelle_ligne, capitalize, nb_mod)
+			i++
 		} else {
 			nouvelle_ligne = append(nouvelle_ligne, ligne[i])
 		}
@@ -118,17 +116,16 @@ func NiveauDeux(ligne []string) []string {
 }
 
 func appliquer_modifieur(nouvelle_ligne []string, f func(string) string, nb int) []string {
-	tomodify:= []string{}
-	fmt.Println("nb_mod:", nb)
+	tomodify := []string{}
 	for j := 0; j < nb; j++ {
 		tomodify = append(tomodify, nouvelle_ligne[len(nouvelle_ligne)-1])
-		if !isAlpha(nouvelle_ligne[len(nouvelle_ligne)-1]) {
+		if strings.ContainsAny(nouvelle_ligne[len(nouvelle_ligne)-1], "()") {
 			j--
 		}
 		nouvelle_ligne = nouvelle_ligne[:len(nouvelle_ligne)-1]
 	}
 	slices.Reverse(tomodify)
-	for _,mot := range tomodify {
+	for _, mot := range tomodify {
 		nouvelle_ligne = append(nouvelle_ligne, f(mot))
 	}
 	return nouvelle_ligne
