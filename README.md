@@ -1,6 +1,6 @@
 # go-reloaded
 
-Outil en Go qui lit un texte brut (`capsule.txt`), le corrige selon un ensemble de règles (conversion de nombres, casse, ponctuation, guillemets, article *a/an*) et écrit le résultat dans `retour.txt`.
+Outil en Go qui lit un texte brut passé en premier argument, le corrige selon un ensemble de règles (conversion de nombres, casse, ponctuation, guillemets, article *a/an*) et écrit le résultat dans le fichier passé en deuxième argument, en le créant s'il n'existe pas.
 
 Aucune dépendance externe : uniquement la bibliothèque standard.
 
@@ -11,10 +11,10 @@ Aucune dépendance externe : uniquement la bibliothèque standard.
 ## Utilisation
 
 ```bash
-go run .
+go run . <entrée> <sortie>
 ```
 
-Le programme lit `capsule.txt` à la racine du projet et écrit `retour.txt` (créé ou écrasé). Les deux chemins sont fixés dans `main.go`. Si `capsule.txt` est introuvable, le programme s'arrête avec le code de sortie 1.
+Le programme lit `<entrée>` à la racine du projet et écrit `<sortie>` (créé ou écrasé). Si `<entrée>` est introuvable, ou si les arguments sont invalides, le programme s'arrête avec le code de sortie 1.
 
 
 ## Règles appliquées
@@ -31,13 +31,13 @@ Le texte est traité ligne par ligne, mot par mot.
 
 ## Exemple
 
-Entrée (`capsule.txt`) :
+Entrée (`<entrée>`) :
 
 ```text
 if (cap) you can read this ,your program works . i (up) hid this capsule in 7E0 (hex) , after 101010 (bin) cups of coffee and a unreasonable amount of DEBUGGING (low) .
 ```
 
-Sortie (`retour.txt`) :
+Sortie (`<sortie>`) :
 
 ```text
 If you can read this, your program works. I hid this capsule in 2016, after 42 cups of coffee and an unreasonable amount of debugging.
@@ -48,8 +48,8 @@ If you can read this, your program works. I hid this capsule in 2016, after 42 c
 ```text
 go-reloaded/
 ├── main.go                  # point d'entrée : lecture, application des niveaux, écriture
-├── capsule.txt              # texte d'entrée
-├── retour.txt               # sortie générée
+├── <entrée>              # texte d'entrée
+├── <sortie>               # sortie générée
 └── src/
     ├── tokenizer/           # découpe une chaîne selon un séparateur
     ├── niveaux/             # une règle par fichier : niveauUn.go … niveauCinq.go

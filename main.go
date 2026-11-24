@@ -9,10 +9,11 @@ import (
 )
 
 func main() {
-	fichier, err := os.OpenFile("retour.txt", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600)
+	entrée, sortie := manipulationFichier.Gestion_arguments()
+	fichier, err := os.OpenFile(sortie, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0600)
 	manipulationFichier.Verifier(err)
 	defer fichier.Close()
-	capsule_lue := manipulationFichier.Lire("capsule.txt")
+	capsule_lue := manipulationFichier.Lire(entrée)
 	lignes := tokenizer.Tokenizer(capsule_lue, "\n")
 	for _, ligne := range lignes {
 		mots := tokenizer.Tokenizer(ligne, " ")
